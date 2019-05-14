@@ -6,11 +6,11 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import { ME_QUERY } from "../../graphql/queries";
-import { loginUser } from "../../store/actions";
+import { loginUser, isLoggedIn } from "../../store/actions";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? "<insert-production-url" : "http://localhost:4000/graphql";
 
-const Login = ({ classes, loginUser }) => {
+const Login = ({ classes, loginUser, isLoggedIn }) => {
   const onSuccess = async googleUser => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
@@ -20,6 +20,7 @@ const Login = ({ classes, loginUser }) => {
       const { me } = await client.request(ME_QUERY);
       console.log({ me });
       loginUser(me);
+      isLoggedIn(googleUser.isSignedIn());
     } catch (err) {
       onFailure(err);
     }
@@ -27,6 +28,7 @@ const Login = ({ classes, loginUser }) => {
 
   const onFailure = err => {
     console.error("Error logging in ", err);
+    isLoggedIn(false);
   };
 
   return (
@@ -58,5 +60,5 @@ const styles = {
 
 export default connect(
   null,
-  { loginUser }
+  { loginUser, isLoggedIn }
 )(withStyles(styles)(Login));

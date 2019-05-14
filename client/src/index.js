@@ -7,6 +7,7 @@ import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 
 import { reducer } from "./store/reducers";
+import ProtectedRoute from "./ProtectedRoute";
 import App from "./pages/App";
 import Auth from "./pages/Auth";
 
@@ -17,8 +18,8 @@ ReactDOM.render(
   <Provider store={store}>
     <Router>
       <Switch>
-        <Route exact path='/' component={App} />
-        <Route path='/login' component={Auth} />
+        <ProtectedRoute exact path='/' component={App} />
+        <Route path='/login' render={props => <Auth {...props} />} />
       </Switch>
     </Router>
   </Provider>,
