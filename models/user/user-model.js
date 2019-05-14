@@ -1,4 +1,4 @@
-const db = require("../data/dbConfig.js");
+const db = require("../../data/dbConfig.js");
 
 module.exports = {
   add,
@@ -6,9 +6,7 @@ module.exports = {
 };
 
 async function add(user) {
-  const [id] = await db("users")
-    .insert(user, "id")
-    .first();
+  const [id] = await db("users").insert(user, "id");
   return db("users")
     .where({ id })
     .first();

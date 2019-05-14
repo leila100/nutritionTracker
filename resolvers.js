@@ -1,8 +1,4 @@
-// const user = {
-//   _id: "1",
-//   name: "Leila",
-//   email: "leila@leila.com"
-// };
+const { AuthenticationError } = require("apollo-server");
 
 const authenticated = next => (root, args, ctx, info) => {
   if (!ctx.currentUser) {

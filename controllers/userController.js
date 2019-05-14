@@ -1,6 +1,6 @@
 const { OAuth2Client } = require("google-auth-library");
 
-const User = require("./models/user/user-model");
+const User = require("../models/user/user-model");
 
 const client = new OAuth2Client(process.env.OAUTH_CLIENT_ID);
 
@@ -30,5 +30,6 @@ const checkIfUserExists = async email => await User.findBy({ email });
 const createNewUser = googleUser => {
   const { name, email } = googleUser;
   const user = { name, email };
-  return User.add(user);
+  const newUser = User.add(user);
+  return newUser;
 };
