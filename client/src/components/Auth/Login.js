@@ -1,14 +1,16 @@
 import React from "react";
+import { connect } from "react-redux";
 import { GraphQLClient } from "graphql-request";
 import { GoogleLogin } from "react-google-login";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
 import { ME_QUERY } from "../../graphql/queries";
+import { loginUser } from "../../store/actions";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? "<insert-production-url" : "http://localhost:4000/graphql";
 
-const Login = ({ classes }) => {
+const Login = ({ classes, loginUser }) => {
   const onSuccess = async googleUser => {
     try {
       const idToken = googleUser.getAuthResponse().id_token;
@@ -17,6 +19,7 @@ const Login = ({ classes }) => {
       });
       const { me } = await client.request(ME_QUERY);
       console.log({ me });
+      loginUser(me);
     } catch (err) {
       onFailure(err);
     }
@@ -53,4 +56,7 @@ const styles = {
   }
 };
 
-export default withStyles(styles)(Login);
+export default connect(
+  null,
+  { loginUser }
+)(withStyles(styles)(Login));

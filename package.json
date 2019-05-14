@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node server.js",
-    "server": "nodemon index.js"
+    "server": "nodemon --ignore client/ index.js"
   },
   "dependencies": {
     "apollo-server": "^2.5.0",
