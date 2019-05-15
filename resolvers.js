@@ -16,6 +16,11 @@ module.exports = {
     getUsers: async (root, args, ctx) => {
       const users = await User.getAll();
       return users;
+    },
+
+    getUserById: async (root, args, ctx) => {
+      const user = await User.findBy({ id: args.userId });
+      return user;
     }
   }
 };

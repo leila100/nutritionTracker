@@ -11,5 +11,6 @@ module.exports = gql`
   type Query {
     getCurrentUser: User
     getUsers: [User]
+    getUserById(userId: ID!): User
   }
 `;

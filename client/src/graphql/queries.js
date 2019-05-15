@@ -19,3 +19,15 @@ export const GET_USERS_QUERY = `
   }
 }
 `;
+
+export const GET_USER_BYID_QUERY = `
+query($userId: ID!)
+{
+  getUserById(userId: $userId) {
+    id
+    firstName
+    lastName
+    email
+  }
+}
+`;
