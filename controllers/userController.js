@@ -28,8 +28,8 @@ const verifyAuthToken = async token => {
 const checkIfUserExists = async email => await User.findBy({ email });
 
 const createNewUser = googleUser => {
-  const { name, email } = googleUser;
-  const user = { name, email };
+  const { given_name, family_name, email } = googleUser;
+  const user = { firstName: given_name, lastName: family_name, email };
   const newUser = User.add(user);
   return newUser;
 };

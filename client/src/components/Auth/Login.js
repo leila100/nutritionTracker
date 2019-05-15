@@ -5,7 +5,7 @@ import { GoogleLogin } from "react-google-login";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-import { ME_QUERY } from "../../graphql/queries";
+import { GET_CURRENT_USER_QUERY } from "../../graphql/queries";
 import { loginUser, isLoggedIn } from "../../store/actions";
 
 const BASE_URL = process.env.NODE_ENV === "production" ? "<insert-production-url" : "http://localhost:4000/graphql";
@@ -17,9 +17,9 @@ const Login = ({ classes, loginUser, isLoggedIn }) => {
       const client = new GraphQLClient(BASE_URL, {
         headers: { authorization: idToken }
       });
-      const { me } = await client.request(ME_QUERY);
-      console.log({ me });
-      loginUser(me);
+      const { getCurrentUser } = await client.request(GET_CURRENT_USER_QUERY);
+      console.log({ getCurrentUser });
+      loginUser(getCurrentUser);
       isLoggedIn(googleUser.isSignedIn());
     } catch (err) {
       onFailure(err);

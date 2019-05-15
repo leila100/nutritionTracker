@@ -1,8 +1,9 @@
-export const ME_QUERY = `
+export const GET_CURRENT_USER_QUERY = `
 {
-  me {
+  getCurrentUser {
     id
-    name
+    firstName
+    lastName
     email
   }
 }
