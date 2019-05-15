@@ -8,3 +8,14 @@ export const GET_CURRENT_USER_QUERY = `
   }
 }
 `;
+
+export const GET_USERS_QUERY = `
+{
+  getUsers {
+    id
+    firstName
+    lastName
+    email
+  }
+}
+`;

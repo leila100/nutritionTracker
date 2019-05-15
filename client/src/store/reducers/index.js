@@ -1,8 +1,9 @@
-import { LOGIN_USER, IS_LOGGED_IN } from "../actions";
+import { LOGIN_USER, IS_LOGGED_IN, SAVE_USERS } from "../actions";
 
 const initialState = {
   currentUser: null,
-  isAuth: false
+  isAuth: false,
+  users: []
 };
 
 export function reducer(state = initialState, { type, payload }) {
@@ -19,6 +20,12 @@ export function reducer(state = initialState, { type, payload }) {
         ...state,
         isAuth: payload
       };
+    case SAVE_USERS: {
+      return {
+        ...state,
+        users: payload
+      };
+    }
     default:
       return state;
   }

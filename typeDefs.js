@@ -10,5 +10,6 @@ module.exports = gql`
 
   type Query {
     getCurrentUser: User
+    getUsers: [User]
   }
 `;
