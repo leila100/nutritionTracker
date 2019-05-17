@@ -1,6 +1,8 @@
-const { AuthenticationError } = require("apollo-server");
-
-const User = require("./models/user/user-model");
+// const user = {
+//   _id: "1",
+//   name: "Leila",
+//   email: "leila@leila.com"
+// };
 
 const authenticated = next => (root, args, ctx, info) => {
   if (!ctx.currentUser) {
@@ -11,16 +13,6 @@ const authenticated = next => (root, args, ctx, info) => {
 
 module.exports = {
   Query: {
-    getCurrentUser: authenticated((root, args, ctx) => ctx.currentUser),
-
-    getUsers: async (root, args, ctx) => {
-      const users = await User.getAll();
-      return users;
-    },
-
-    getUserById: async (root, args, ctx) => {
-      const user = await User.findBy({ id: args.userId });
-      return user;
-    }
+    me: authenticated((root, args, ctx) => ctx.currentUser)
   }
 };
