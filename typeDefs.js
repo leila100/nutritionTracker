@@ -2,8 +2,8 @@ const { gql } = require("apollo-server");
 
 module.exports = gql`
   type Query {
-    getExerciseEntries: [ExerciseEntry!]!
-    getExerciseEntryBy(filter: String!, value: String!): ExerciseEntry!
+    getExerciseEntries: [ExerciseEntry!]
+    getExerciseEntryBy(filter: String!): [ExerciseEntry]
     getExerciseEntryById(id: ID!): ExerciseEntry!
     # user: User!
 
@@ -14,11 +14,12 @@ module.exports = gql`
     # getMealCategoryBy(filter: String!): MealCategory!
     # getMealCategoryById(id: ID!): MealCategory!
 
-    # getCurrentUser: User
-    # getUsers: [User!]!
-    # getUserById(userId: ID!): User
+    getCurrentUser: User
+    getUsers: [User!]!
+    getUserById(userId: ID!): User!
+    getUserBy(filter: String!, value: String!): [User!]
     # getFoodEntriesByUserId(userId: ID!): FoodEntry!
-    # getExerciseEntriesByUserId(userId: ID!): ExerciseEntry!
+    # getExerciseEntriesByUserId(userId: ID!): [ExerciseEntry!]
 
     # getFoodCategories: [FoodCategory!]!
     # getFoodEntriesByFoodId(foodEntryId: ID!): FoodCategory!
@@ -40,8 +41,8 @@ module.exports = gql`
     # updateMealCategory(id: ID!, changes: MealCategory!): MealCategory!
     # deleteMealCategory(id: ID!): Int!
 
-    # deleteUser(userId: ID!): Int!
-    # updateUser(userId: ID!, user: User!): User!
+    deleteUser(userId: ID!): Int!
+    updateUser(userId: ID!, input: UserInput!): User!
 
     # addFoodCategory(newFoodCategory: FoodCategory!): FoodCategory!
     # updateFoodCategory(id: ID!, data: FoodCategory!): FoodCategory!
@@ -96,15 +97,24 @@ module.exports = gql`
 
   type ExerciseEntry {
     id: ID!
-    date: String!
-    name: String!
+    exerciseEntryDate: String!
+    exerciseName: String!
     caloriesBurned: Int!
     user: User!
   }
-
   input ExerciseEntryInput {
     date: String!
     name: String!
     caloriesBurned: Int!
+    user: Int!
+  }
+  input UserInput {
+    firstName: String
+    lastName: String
+    username: String
+    email: String
+    userType: String
+    calorieGoal: Int
+    weight: Int
   }
 `;

@@ -1,8 +1,8 @@
 //* import ExerciseEntry helper functions
-const { AuthenticationError } = require("apollo-server");
+const { AuthenticationError, UserInputError } = require("apollo-server");
 
 const ExerciseEntry = require("../../models/exerciseEntriesModel");
-const User = require("../../models/usersModel");
+const Users = require("../../models/usersModel");
 
 const authenticated = next => (root, args, ctx, info) => {
   if (!ctx.currentUser) {
@@ -13,33 +13,25 @@ const authenticated = next => (root, args, ctx, info) => {
 
 module.exports = {
   Query: {
-    getExerciseEntries: authenticated(async (root, args, ctx) => {
-      try {
-        const entries = await ExerciseEntry.getAll(ctx.currentUser.id);
-        return entries;
-      } catch (err) {
-        throw new AuthenticationError("Error fetching exercise entries", err);
-      }
-    }),
+    getExerciseEntries: async (root, args, ctx) => {
+      const entries = await ExerciseEntry.getAll();
+      return entries;
+    },
 
-    getExerciseEntryBy: authenticated(async (root, args, ctx) => {
-      try {
-        const entry = await ExerciseEntry.findBy(args.filter, args.value, ctx.currentUser.id);
-        return entry;
-      } catch (err) {
-        throw new AuthenticationError("Error fetching exercise entry by ", args.filter, err);
-      }
-    }),
-
-    getExerciseEntryById: authenticated(async (root, args, ctx) => {
-      try {
-        const entry = await ExerciseEntry.findById(args.id, ctx.currentUser.id);
-        console.log("entry: ", entry);
-        return entry;
-      } catch (err) {
-        throw new AuthenticationError("Error fetching by id", err);
-      }
-    })
+    getExerciseEntryBy: async (root, args, ctx) => {
+      const entry = await ExerciseEntry.findBy(args.filter);
+      return entry;
+    },
+    getExerciseEntryById: async (root, args, ctx) => {
+      const entry = await ExerciseEntry.findById(args.id);
+      return entry;
+    }
+  },
+  ExerciseEntry: {
+    user: async (root, args, ctx, info) => {
+      const user = await Users.findById(root.exercise_entry_user_id);
+      return user;
+    }
   },
 
   Mutation: {

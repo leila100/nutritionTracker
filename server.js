@@ -14,7 +14,9 @@ const foodEntryResolver = require("./resolvers/foodEntry");
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers: exerciseResolver,
+  resolvers: userResolver,
+  // {
+  // exerciseResolver,
   // foodResolver,
   // mealCatResolver,
   // userResolver,
