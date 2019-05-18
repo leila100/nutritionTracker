@@ -41,8 +41,9 @@ module.exports = gql`
     # updateMealCategory(id: ID!, changes: MealCategory!): MealCategory!
     # deleteMealCategory(id: ID!): Int!
 
+    addUser(input: UserInput!): User!
     deleteUser(userId: ID!): Int!
-    updateUser(userId: ID!, input: UserInput!): User!
+    updateUser(userId: ID!, input: UpdateUserInput!): User!
 
     # addFoodCategory(newFoodCategory: FoodCategory!): FoodCategory!
     # updateFoodCategory(id: ID!, data: FoodCategory!): FoodCategory!
@@ -109,6 +110,15 @@ module.exports = gql`
     user: Int!
   }
   input UserInput {
+    firstName: String!
+    lastName: String!
+    username: String!
+    email: String!
+    userType: String!
+    calorieGoal: Int!
+    weight: Int!
+  }
+  input UpdateUserInput {
     firstName: String
     lastName: String
     username: String

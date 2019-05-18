@@ -60,6 +60,10 @@ module.exports = {
   },
 
   Mutation: {
+    addUser: async (root, args, ctx) => {
+      const newUSer = await User.add(args.input);
+      return newUSer;
+    },
     deleteUser: async (root, args, ctx) => {
       const count = await User.remove(args.userId);
       return count;
