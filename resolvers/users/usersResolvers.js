@@ -35,26 +35,29 @@ module.exports = {
     },
 
     getUserBy: async (root, args, ctx) => {
-      console.log("in getUserBy ", args);
-      const user = await User.findBy({ [args.filter]: args.value });
+      const user = await User.findBy(args.filter);
       console.log({ user });
       return user;
+    },
+
+    getFoodEntriesByUserId: async (root, args, ctx) => {
+      const entries = await FoodEntry.findBy({ user_id: args.userId });
+      return entries;
+    },
+
+    getExerciseEntriesByUserId: async (root, args, ctx) => {
+      const entries = await ExerciseEntry.findBy({ exercise_entry_user_id: args.userId });
+      console.log(entries);
+      return entries;
     }
-
-    // getFoodEntries: async (root, args, ctx) => {
-    //   const entries = await FoodEntry.findBy({ user_id: args.userId });
-    //   return entries;
-    // },
-
-    // getExerciseEntriesByUserId: async (root, args, ctx) => {
-    //   const entries = await ExerciseEntry.findBy({ exercise_entry_user_id: args.userId });
-    //   console.log(entries);
-    //   return entries;
-    // }
   },
   User: {
     exerciseEntries: async (root, args, ctx, info) => {
       const entries = await ExerciseEntry.findBy({ exercise_entry_user_id: root.id });
+      return entries;
+    },
+    foodEntries: async (root, args, ctx, info) => {
+      const entries = await FoodEntry.findBy({ user_id: root.id });
       return entries;
     }
   },

@@ -1,6 +1,9 @@
 const { AuthenticationError } = require("apollo-server");
 
 const FoodEntry = require("../models/foodEntriesModel");
+const User = require("../models/usersModel");
+const Food = require("../models/foodsModel");
+const MealCat = require("../models/mealCategoriesModel");
 
 const authenticated = next => (root, args, ctx, info) => {
   if (!ctx.currentUser) {
@@ -19,19 +22,19 @@ module.exports = {
     getFoodEntriesById: async (root, args, ctx) => {
       const foodEntry = await FoodEntry.findById(args.id);
       return foodEntry;
+    }
+  },
+  FoodEntry: {
+    user: async (root, args, ctx) => {
+      const owner = await User.findBy({ id: root.user_id });
+      return owner;
     },
-    FoodEntry: {
-      user: async (root, args, ctx) => {
-        const owner = await FoodEntry.findBy({ user_id: root.id });
-        return owner;
-      },
-      food: async (root, args, ctx) => {
-        const loggedFood = await FoodEntry.findBy({ food_id: root.id });
-        return loggedFood;
-      },
-      mealCategory: async (root, args, ctx) => {
-        const mealCat = await FoodEntry.findBy({ meal_category_id: root.id });
-      }
+    food: async (root, args, ctx) => {
+      const loggedFood = await Food.findBy({ id: root.food_id });
+      return loggedFood;
+    },
+    mealCategory: async (root, args, ctx) => {
+      const mealCat = await MealCat.findBy({ id: root.meal_category_id });
     }
   },
 
