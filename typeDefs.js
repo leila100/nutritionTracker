@@ -3,7 +3,7 @@ const { gql } = require("apollo-server");
 module.exports = gql`
   type Query {
     getExerciseEntries: [ExerciseEntry!]
-    getExerciseEntryBy(filter: String!): [ExerciseEntry]
+    getExerciseEntryBy(filter: String!, value: String!): [ExerciseEntry]
     getExerciseEntryById(id: ID!): ExerciseEntry!
 
     # getFoods: [Food!]!
@@ -16,7 +16,7 @@ module.exports = gql`
     getCurrentUser: User
     getUsers: [User!]!
     getUserById(userId: ID!): User!
-    getUserBy(filter: String!): [User!]
+    getUserBy(filter: String!, value: String!): [User!]
     getFoodEntriesByUserId(userId: ID!): FoodEntry!
     getExerciseEntriesByUserId(userId: ID!): [ExerciseEntry!]
 
@@ -103,10 +103,10 @@ module.exports = gql`
     user: User!
   }
   input ExerciseEntryInput {
-    date: String!
-    name: String!
+    exerciseEntryDate: String!
+    exerciseName: String!
     caloriesBurned: Int!
-    user: Int!
+    exercise_entry_user_id: Int!
   }
   input UserInput {
     firstName: String!

@@ -19,7 +19,7 @@ module.exports = {
     },
 
     getExerciseEntryBy: async (root, args, ctx) => {
-      const entry = await ExerciseEntry.findBy(args.filter);
+      const entry = await ExerciseEntry.findBy({ [args.filter]: args.value });
       return entry;
     },
     getExerciseEntryById: async (root, args, ctx) => {
@@ -36,14 +36,8 @@ module.exports = {
 
   Mutation: {
     addExerciseEntry: async (root, args, ctx) => {
-      const newEntry = {
-        ...args.input,
-        user: ctx.currentUser.id
-      };
-      const newExerciseEntry = await ExerciseEntry.add(newEntry);
-      const userData = await User.findById(ctx.currentUser.id);
-      console.log({ userData });
-      return { ...newExerciseEntry, user: userData };
+      const newExerciseEntry = await ExerciseEntry.add(args.input);
+      return newExerciseEntry;
     },
 
     updateExerciseEntry: async (root, args, ctx) => {
@@ -56,11 +50,4 @@ module.exports = {
       return deletedCount;
     }
   }
-
-  // ExerciseEntry: {
-  //   user: async (root, args, ctx) => {
-  //     const user = await ExerciseEntry.findBy({ id: root.id });
-  //     return user;
-  //   }
-  // }
 };
