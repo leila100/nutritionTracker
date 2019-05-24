@@ -1,65 +1,81 @@
 import React from "react";
-import { connect } from "react-redux";
-import { GraphQLClient } from "graphql-request";
-import { GoogleLogin } from "react-google-login";
-import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import Header from "../Reusables/Header";
+import { GoogleLogin } from 'react-google-login';
+import styled from "styled-components";
+import { GraphQLClient } from 'graphql-request'
+const LoginOrRegisterContainer = styled.div`
+  background: #fcfcfb;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100vh;
+`;
 
-import { GET_CURRENT_USER_QUERY } from "../../graphql/queries";
-import { loginUser, isLoggedIn } from "../../store/actions";
+const LoginOrRegisterForm = styled.div`
+  background: #3685b5;
+  width: 50%;
+  height: 500px;
+  padding: 100px;
+  display: flex;
+  justify-content: center;
+  align-content:center;
+  flex-wrap: wrap;
+  -webkit-box-shadow: 6px 7px 24px -1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 6px 7px 24px -1px rgba(0, 0, 0, 0.75);
+  box-shadow: 6px 7px 24px -1px rgba(0, 0, 0, 0.75);
+  border-radius: 10px;
+`;
 
-const BASE_URL = process.env.NODE_ENV === "production" ? "<insert-production-url" : "http://localhost:4000/graphql";
+const FormContainer = styled.div`
+    display:flex;
+    justify-content:center;
+    width:50%;
+`;
 
-const Login = ({ classes, loginUser, isLoggedIn }) => {
-  const onSuccess = async googleUser => {
-    try {
-      const idToken = googleUser.getAuthResponse().id_token;
-      localStorage.setItem("token", idToken);
-      const client = new GraphQLClient(BASE_URL, {
-        headers: { authorization: idToken }
-      });
-      const { getCurrentUser } = await client.request(GET_CURRENT_USER_QUERY);
-      console.log({ getCurrentUser });
-      loginUser(getCurrentUser);
-      isLoggedIn(googleUser.isSignedIn());
-    } catch (err) {
-      onFailure(err);
+const ME_QUERY = `
+  {
+    me {
+      _id
+      name
+      email
     }
-  };
+  }
+`;
 
-  const onFailure = err => {
-    console.error("Error logging in ", err);
-    isLoggedIn(false);
-  };
+const LoginOrRegister = ({ classes }) => {
+
+  const onSuccess = async googleUser => {
+    console.log({googleUser})
+    const idToken = googleUser.getAuthResponse().id_token;
+    const client = new GraphQLClient('http://localhost:4000', {
+      headers: {authorization: idToken}
+    })
+
+    const data = await client.request(ME_QUERY)
+
+    console.log(data)
+  }
 
   return (
-    <div className={classes.root}>
-      <Typography component='h1' variant='h3' gutterBottom noWrap style={{ color: "rgb(66, 133, 244)" }}>
-        Welcome
-      </Typography>
-      <GoogleLogin
-        clientId={process.env.REACT_APP_OAUTH_CLIENT_ID}
-        onSuccess={onSuccess}
-        onFailure={onFailure}
-        isSignedIn={true}
-        buttonText='Login with google'
-        theme='dark'
-      />
-    </div>
+    <>
+            <Header />
+    <LoginOrRegisterContainer>
+      <FormContainer>
+          <LoginOrRegisterForm>
+              <div>
+                <GoogleLogin
+                  style={{height:10}}
+                  clientId="1047286164516-jv47gpee2568sc3bindc9ra3vua101t3.apps.googleusercontent.com"
+                  onSuccess={onSuccess}
+                />
+              </div>
+          </LoginOrRegisterForm>
+      </FormContainer>
+    </LoginOrRegisterContainer>
+    </>
   );
-};
+}
 
-const styles = {
-  root: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-    alignItems: "center"
-  }
-};
-
-export default connect(
-  null,
-  { loginUser, isLoggedIn }
-)(withStyles(styles)(Login));
+export default LoginOrRegister;

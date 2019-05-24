@@ -1,12 +1,17 @@
 const { ApolloServer } = require("apollo-server");
 
 const typeDefs = require("./typeDefs");
-const resolvers = require("./resolvers");
+
 const { findOrCreateUser } = require("./controllers/userController");
+
+//* import resolvers
+const resolvers = require("./resolvers/index");
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  introspection: true,
+  playground: true,
   context: async ({ req }) => {
     let authToken = null;
     let currentUser = null;

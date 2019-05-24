@@ -1,9 +1,9 @@
 const { AuthenticationError } = require("apollo-server");
 
 const FoodEntry = require("../models/foodEntriesModel");
-const User = require("../models/usersModel");
 const Food = require("../models/foodsModel");
-const MealCat = require("../models/mealCategoriesModel");
+const MealCategory = require("../models/mealCategoriesModel");
+const User = require("../models/usersModel");
 
 const authenticated = next => (root, args, ctx, info) => {
   if (!ctx.currentUser) {
@@ -24,32 +24,34 @@ module.exports = {
       return foodEntry;
     }
   },
+
   FoodEntry: {
-    user: async (root, args, ctx) => {
-      const owner = await User.findBy({ id: root.user_id });
+    user_id: async (root, args, ctx) => {
+      const owner = await User.findById(root.user_id);
       return owner;
     },
-    food: async (root, args, ctx) => {
-      const loggedFood = await Food.findBy({ id: root.food_id });
+    food_id: async (root, args, ctx) => {
+      const loggedFood = await Food.findById(root.food_id);
       return loggedFood;
     },
-    mealCategory: async (root, args, ctx) => {
-      const mealCat = await MealCat.findBy({ id: root.meal_category_id });
+    meal_category_id: async (root, args, ctx) => {
+      const mealCat = await MealCategory.findById(root.meal_category_id);
+      return mealCat;
     }
   },
 
   Mutation: {
     addFoodEntry: async (root, args, ctx) => {
       const newFoodEntry = {
-        ...args
+        ...args.input
       };
       const addedEntry = await FoodEntry.add(newFoodEntry);
       return addedEntry;
     },
 
     updateFoodEntry: async (root, args, ctx) => {
-      const { id, data } = args;
-      const foodEntry = await FoodEntry.edit(id, data);
+      const { id, input } = args;
+      const foodEntry = await FoodEntry.edit(id, input);
       return foodEntry;
     },
 

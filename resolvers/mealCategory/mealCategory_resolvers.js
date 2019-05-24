@@ -1,5 +1,6 @@
 //* Import MealCategory helper functions
 const MealCategory = require("../../models/mealCategoriesModel");
+const FoodEntry = require("../../models/foodEntriesModel");
 
 module.exports = {
   Query: {
@@ -9,8 +10,8 @@ module.exports = {
     },
 
     getMealCategoryBy: async (root, args, ctx) => {
-      const category = await MealCategory.findBy(args.filter);
-      return category;
+      const category = await MealCategory.findBy({ [args.param]: args.value });
+      return category[0];
     },
 
     getMealCategoryById: async (root, args, ctx) => {
@@ -19,14 +20,21 @@ module.exports = {
     }
   },
 
+  MealCategory: {
+    foodEntries: async (root, args, ctx, info) => {
+      const entries = await FoodEntry.findBy({ meal_category_id: root.id });
+      return entries;
+    }
+  },
+
   Mutation: {
     addMealCategory: async (root, args, ctx) => {
-      const newCategory = await MealCategory.add(args.newCategory);
+      const newCategory = await MealCategory.add(args.input);
       return newCategory;
     },
 
     updateMealCategory: async (root, args, ctx) => {
-      const category = await MealCategory.edit(args.id, args.changes);
+      const category = await MealCategory.edit(args.id, args.input);
       return category;
     },
 

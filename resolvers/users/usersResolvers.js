@@ -13,15 +13,6 @@ const authenticated = next => (root, args, ctx, info) => {
 
 module.exports = {
   Query: {
-    // Add in typeDefs.js
-    // type Query {
-    //   getCurrentUser: User
-    //   getUsers: [User]
-    //   getUserById(userId: ID!): User
-    //   getFoodEntries(userId: ID!): FoodEntry!
-    //   getExerciseEntries(userId: ID!): ExerciseEntry!
-    // }
-
     getCurrentUser: authenticated((root, args, ctx) => ctx.currentUser),
 
     getUsers: async (root, args, ctx) => {
@@ -35,8 +26,8 @@ module.exports = {
     },
 
     getUserBy: async (root, args, ctx) => {
-      const user = await User.findBy({ [args.filter]: args.value });
-      return user;
+      const user = await User.findBy({ [args.param]: args.value });
+      return user[0];
     },
 
     getFoodEntriesByUserId: async (root, args, ctx) => {
@@ -46,10 +37,10 @@ module.exports = {
 
     getExerciseEntriesByUserId: async (root, args, ctx) => {
       const entries = await ExerciseEntry.findBy({ exercise_entry_user_id: args.userId });
-      console.log(entries);
       return entries;
     }
   },
+
   User: {
     exerciseEntries: async (root, args, ctx, info) => {
       const entries = await ExerciseEntry.findBy({ exercise_entry_user_id: root.id });
@@ -67,11 +58,11 @@ module.exports = {
       return newUSer;
     },
     deleteUser: async (root, args, ctx) => {
-      const count = await User.remove(args.userId);
+      const count = await User.remove(args.id);
       return count;
     },
     updateUser: async (root, args, ctx) => {
-      const user = await User.edit(args.userId, args.input);
+      const user = await User.edit(args.id, args.input);
       return user;
     }
   }

@@ -1,15 +1,6 @@
 //* import ExerciseEntry helper functions
-const { AuthenticationError, UserInputError } = require("apollo-server");
-
 const ExerciseEntry = require("../../models/exerciseEntriesModel");
 const Users = require("../../models/usersModel");
-
-const authenticated = next => (root, args, ctx, info) => {
-  if (!ctx.currentUser) {
-    throw new AuthenticationError("You must be logged in!");
-  }
-  return next(root, args, ctx, info);
-};
 
 module.exports = {
   Query: {
@@ -19,16 +10,17 @@ module.exports = {
     },
 
     getExerciseEntryBy: async (root, args, ctx) => {
-      const entry = await ExerciseEntry.findBy({ [args.filter]: args.value });
+      const entry = await ExerciseEntry.findBy({ [args.param]: args.value });
       return entry;
     },
+
     getExerciseEntryById: async (root, args, ctx) => {
       const entry = await ExerciseEntry.findById(args.id);
       return entry;
     }
   },
   ExerciseEntry: {
-    user: async (root, args, ctx, info) => {
+    exercise_entry_user_id: async (root, args, cxt, info) => {
       const user = await Users.findById(root.exercise_entry_user_id);
       return user;
     }
@@ -41,7 +33,7 @@ module.exports = {
     },
 
     updateExerciseEntry: async (root, args, ctx) => {
-      const exerciseEntry = await ExerciseEntry.edit(args.id, args.changes);
+      const exerciseEntry = await ExerciseEntry.edit(args.id, args.input);
       return exerciseEntry;
     },
 
