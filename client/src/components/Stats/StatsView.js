@@ -1,11 +1,15 @@
 import React from "react";
 import Header from "../Reusables/Header";
-import classNames from 'classnames';
+import classNames from "classnames";
 import { withStyles } from "@material-ui/core/styles/index";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import StatsDashboard from "./StatsDashboard";
+
+import { GraphQLClient } from "graphql-request";
+
+// import StatsDashboard from "./StatsDashboard";
 import FoodLogStats from "./FoodLogStats";
+import { GET_FOOD_ENTRIES_BY_USER_QUERY } from "../../graphql/queries";
 
 const styles = theme => ({
   button: {
@@ -14,80 +18,51 @@ const styles = theme => ({
     width: 100,
     color: "white",
     textDecoration: "none",
-    disableUnderline: true,
+    disableUnderline: true
   },
   container: {
-    display: 'flex',
-    width: '1000px',
-    maxWidth: '1500px',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'wrap',
+    display: "flex",
+    width: "1000px",
+    maxWidth: "1500px",
+    justifyContent: "center",
+    alignItems: "center",
+    flexWrap: "wrap"
   }
 });
 
-class StatsView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      statCalendarEntries: {
-        daily: [
-          {
-            carbs: 2402,
-            protein: 540,
-            fat: 20
-          }
-        ],
-        weekly: [
-          {
-            carbs: 12402,
-            protein: 1540,
-            fat: 120
-          }
-        ],
-        monthly: [
-          {
-            carbs: 32402,
-            protein: 3540,
-            fat: 320
-          }
-        ]
-      }
-    };
-  }
+const BASE_URL = process.env.NODE_ENV === "production" ? "<insert-production-url" : "http://localhost:4000/graphql";
 
-  handleChange = input => e => {
-    this.setState({ [input]: e.target.value });
-    console.log(e.target.value);
+class StatsView extends React.Component {
+  state = {
+    foodEntries: [],
+    breakfastCalories: 0,
+    lunchCalories: 0,
+    dinnerCalories: 0,
+    snackCalories: 0
   };
 
-  handleSubmit = e => {
-    console.log(e);
-    e.preventDefault();
-    // const { firstName, lastName, email } = this.state;
+  componentDidMount = async () => {
+    const client = new GraphQLClient(BASE_URL);
+    const variables = { userId: 1 };
+    try {
+      const foodEntries = await client.request(GET_FOOD_ENTRIES_BY_USER_QUERY, variables);
+      this.setState({ foodEntries: foodEntries.getFoodEntriesByUserId });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   render() {
     const { classes } = this.props;
     return (
       <>
-
-        
         <Header />
-        <Grid
-          container
-          spacing={8}
-          lg={4}
-          direction="row"
-          justify="center"
-          alignItems="center"
-        >
-         <div className={classes.container} >
-          <StatsDashboard />
-          <FoodLogStats calories={this.state.statCalendarEntries} />
+        <Grid container spacing={8} lg={4} direction='row' justify='center' alignItems='center'>
+          <div className={classes.container}>
+            {/* <StatsDashboard /> */}
+            <FoodLogStats foodEntries={this.state.foodEntries} />
           </div>
         </Grid>
-  
       </>
     );
   }
